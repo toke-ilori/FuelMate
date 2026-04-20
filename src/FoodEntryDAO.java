@@ -11,7 +11,7 @@ public class FoodEntryDAO {
         try {
             Connection conn = DatabaseConnection.getConnection();
     
-            String sql = "SELECT food_name, calories, protein, carbs, fats FROM food_entries WHERE user_id = ?";
+            String sql = "SELECT id, food_name, calories, protein, carbs, fats FROM food_entries WHERE user_id = ?";
             
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, userId);
@@ -22,12 +22,13 @@ public class FoodEntryDAO {
     
             while (rs.next()) {
                 result.append(
-                    rs.getString("food_name") + " | " +
-                    rs.getInt("calories") + " kcal | " +
-                    "P: " + rs.getDouble("protein") + "g | " +
-                    "C: " + rs.getDouble("carbs") + "g | " +
-                    "F: " + rs.getDouble("fats") + "g\n"
-);
+                "ID: " + rs.getInt("id") + " | " +
+                rs.getString("food_name") + " | " +
+                rs.getInt("calories") + " kcal | " +
+                "P: " + rs.getDouble("protein") + "g | " +
+                "C: " + rs.getDouble("carbs") + "g | " +
+                "F: " + rs.getDouble("fats") + "g\n"
+            );
             }
     
             if (result.toString().equals("🍽 Your Food Entries:\n\n")) {
