@@ -36,6 +36,8 @@ public class FuelMateGUI {
         JTextField proteinField = new JTextField();
         JTextField carbsField = new JTextField();
         JTextField fatsField = new JTextField();
+
+        JTextField foodIdField = new JTextField();
     
         // OUTPUT
         JTextArea output = new JTextArea();
@@ -46,6 +48,8 @@ public class FuelMateGUI {
         JButton loadUserBtn = new JButton("Load User");
         JButton addFoodBtn = new JButton("Add Food");
         JButton viewFoodBtn = new JButton("View Food");
+        JButton deleteFoodBtn = new JButton("Delete Food");
+        JButton updateFoodBtn = new JButton("Update Calories");
     
         // MAIN PANEL
         JPanel mainPanel = new JPanel();
@@ -71,7 +75,7 @@ public class FuelMateGUI {
         loadPanel.add(loadUserBtn);
     
         // FOOD PANEL
-        JPanel foodPanel = new JPanel(new GridLayout(5,2,10,10));
+        JPanel foodPanel = new JPanel(new GridLayout(6,2,10,10));
         foodPanel.setBorder(BorderFactory.createTitledBorder("🍽 Food Entry"));
     
         foodPanel.add(new JLabel("Food Name")); foodPanel.add(foodField);
@@ -79,12 +83,16 @@ public class FuelMateGUI {
         foodPanel.add(new JLabel("Protein")); foodPanel.add(proteinField);
         foodPanel.add(new JLabel("Carbs")); foodPanel.add(carbsField);
         foodPanel.add(new JLabel("Fats")); foodPanel.add(fatsField);
+
+        foodPanel.add(new JLabel("Food ID")); foodPanel.add(foodIdField);
     
         // BUTTON PANEL
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(createUserBtn);
         buttonPanel.add(addFoodBtn);
         buttonPanel.add(viewFoodBtn);
+        buttonPanel.add(updateFoodBtn);
+        buttonPanel.add(deleteFoodBtn);
     
         // ADD EVERYTHING 
         mainPanel.add(userPanel);
@@ -161,6 +169,32 @@ public class FuelMateGUI {
 
             } catch (Exception ex) {
                 output.setText("Error loading food");
+            }
+        });
+
+        // DELETE FOOD 
+        deleteFoodBtn.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(foodIdField.getText());
+                FoodEntryDAO.deleteFoodEntry(id);
+                output.setText("🗑 Food deleted!");
+            } catch (Exception ex) {
+                output.setText("❌ Error deleting food");
+            }
+        });
+
+        //UPDATE FOOD
+        updateFoodBtn.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(foodIdField.getText());
+                int newCalories = Integer.parseInt(caloriesField.getText());
+        
+                FoodEntryDAO.updateFoodEntry(id, newCalories);
+        
+                output.setText("✏️ Food updated!");
+        
+            } catch (Exception ex) {
+                output.setText("❌ Error updating food");
             }
         });
 
