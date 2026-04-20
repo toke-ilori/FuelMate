@@ -4,27 +4,42 @@ import java.sql.ResultSet;
 
 public class FoodEntryDAO {
 
-    public static void viewFoodEntries() {
+    public static String viewFoodEntries(int userId) {
 
+        StringBuilder result = new StringBuilder();
+    
         try {
             Connection conn = DatabaseConnection.getConnection();
-
-            String sql = "SELECT * FROM food_entries";
-
+    
+            String sql = "SELECT food_name, calories, protein, carbs, fats FROM food_entries WHERE user_id = ?";
+            
             PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, userId);
+    
             ResultSet rs = stmt.executeQuery();
-
+    
+            result.append("🍽 Your Food Entries:\n\n");
+    
             while (rs.next()) {
-                System.out.println(
-                    rs.getInt("id") + " | " +
+                result.append(
                     rs.getString("food_name") + " | " +
-                    rs.getInt("calories")
-                );
+                    rs.getInt("calories") + " kcal | " +
+                    "P: " + rs.getDouble("protein") + "g | " +
+                    "C: " + rs.getDouble("carbs") + "g | " +
+                    "F: " + rs.getDouble("fats") + "g\n"
+);
             }
-
+    
+            if (result.toString().equals("🍽 Your Food Entries:\n\n")) {
+                result.append("No entries found.");
+            }
+    
         } catch (Exception e) {
             e.printStackTrace();
+            return "Error loading food entries";
         }
+    
+        return result.toString();
     }
     public static void updateFoodEntry(int id, int newCalories) {
 
@@ -65,7 +80,7 @@ public class FoodEntryDAO {
             e.printStackTrace();
         }
     }
-    public static void addFoodEntry(int userId, String foodName, int calories, double protein, double carbs, double fats) {
+    public static void addFoodEntry(int userId, String food, int calories, double protein, double carbs, double fats) {
 
         try {
             Connection conn = DatabaseConnection.getConnection();
@@ -75,7 +90,7 @@ public class FoodEntryDAO {
             PreparedStatement stmt = conn.prepareStatement(sql);
     
             stmt.setInt(1, userId);
-            stmt.setString(2, foodName);
+            stmt.setString(2, food);
             stmt.setInt(3, calories);
             stmt.setDouble(4, protein);
             stmt.setDouble(5, carbs);
@@ -83,7 +98,7 @@ public class FoodEntryDAO {
     
             stmt.executeUpdate();
     
-            System.out.println("Food entry added successfully!");
+            System.out.println("Food added!");
     
         } catch (Exception e) {
             e.printStackTrace();
